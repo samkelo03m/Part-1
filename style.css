@@ -1,0 +1,314 @@
+:root {
+    --bg: #050b16;
+    --panel: #091223;
+    --border: #14304d;
+    --cyan: #00e5ff;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --red: #ff3b3b;
+    --text: #e6f0ff;
+    --muted: #7c96b2;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", -apple-system, sans-serif;
+}
+
+body {
+    background: radial-gradient(circle at top, #07152b, #02060d);
+    color: var(--text);
+    height: 100vh;
+    /* Changed to allow vertical scrolling on mobile while hiding horizontal overflow */
+    overflow-x: hidden;
+    overflow-y: hidden; 
+}
+
+/* HEADER STYLE PROFILE */
+.topbar {
+    height: 70px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    background: #07111f;
+}
+
+.top-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.top-left h1 {
+    color: var(--cyan);
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.top-left p {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.menu-btn, .logo-icon {
+    font-size: 1.5rem;
+    color: var(--cyan);
+}
+
+.top-right {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.clock-panel {
+    text-align: right;
+    font-family: monospace;
+}
+#live-time { font-size: 1.1rem; color: var(--cyan); font-weight: bold;}
+#live-date { font-size: 0.75rem; color: var(--muted); }
+
+.operator-panel {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+}
+
+/* APP PANEL GRID MATRIX */
+.dashboard {
+    display: grid;
+    grid-template-columns: 320px 1fr 320px;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    height: calc(100vh - 110px);
+}
+
+.panel {
+    background: rgba(7, 17, 31, 0.95);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.02);
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    color: var(--cyan);
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(20, 48, 77, 0.5);
+    padding-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+
+.sidebar, .right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow-y: auto;
+}
+
+.center-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow: hidden;
+}
+
+/* TOPOLOGY EXPANSION MAXIMIZER */
+.large-panel { 
+    flex: 3; 
+    min-height: 0; 
+}
+.topology-container { 
+    height: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    background: #030812; 
+    border-radius: 4px; 
+    padding: 0px; 
+    overflow: hidden;
+}
+#grid-svg { 
+    width: 100%; 
+    height: 100%; 
+}
+
+/* VECTOR GRAPHICS STYLING */
+.transmission-line { stroke: #4a6385; stroke-width: 6; transition: 0.3s; stroke-linecap: round;}
+.critical-line { stroke: var(--red); stroke-width: 8;}
+.busbar { stroke: #ffffff; stroke-width: 10; stroke-linecap: square; transition: stroke 0.3s;}
+.generator { fill: #07111f; stroke: var(--green); stroke-width: 5; transition: all 0.3s; }
+
+/* DYNAMIC STEP CONTENT STYLING */
+#course-content {
+    line-height: 1.6;
+    font-size: 0.95rem;
+    animation: textGlitchIn 0.4s ease-out;
+}
+#course-content h2 { font-size: 1.2rem; color: #fff; margin-bottom: 0.5rem; }
+#course-content p { color: #c7d6ea; margin-bottom: 0.75rem; }
+
+@keyframes textGlitchIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.technical-note {
+    background: rgba(0, 229, 255, 0.03);
+    border-left: 3px solid var(--cyan);
+    padding: 0.6rem;
+    margin: 0.5rem 0;
+    font-size: 0.85rem;
+    border-radius: 0 4px 4px 0;
+}
+.technical-note ul { margin-left: 1.2rem; margin-top: 0.25rem; }
+
+.nav-controls { display: flex; gap: 0.5rem; }
+.step-dots { display: flex; justify-content: center; gap: 8px; margin-top: 0.75rem; }
+
+/* TELEMETRY PACKETS */
+.metric-box { margin-bottom: 0.5rem; background: rgba(2, 11, 22, 0.5); padding: 0.5rem; border-radius: 4px; border: 1px solid rgba(20, 48, 77, 0.3); }
+.metric-title { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; }
+.metric-value { font-size: 1.5rem; color: var(--cyan); font-weight: bold; font-family: monospace; }
+
+/* CHARTS ROW */
+.trend-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+.trend-panel { height: 110px; padding: 0.25rem; min-height: 0; flex-shrink: 0;}
+.trend-panel .panel-header { font-size: 0.7rem; margin-bottom: 0.2rem;}
+.trend-panel canvas { max-height: 75px; width: 100%; }
+
+/* SCADA ARTIFACTS */
+#alarm-box, #event-log { flex: 1; overflow-y: auto; font-family: monospace; font-size: 0.8rem; max-height: 130px; }
+.alarm { padding: 0.4rem; margin-bottom: 0.4rem; border-left: 3px solid; border-radius: 0 4px 4px 0; }
+.alarm.CRITICAL { border-color: var(--red); background: rgba(255, 59, 59, 0.08); color: #ff8888; }
+.alarm.WARNING { border-color: var(--yellow); background: rgba(255, 204, 0, 0.08); color: #ffdd66; }
+.event { padding: 0.2rem 0; border-bottom: 1px solid #10243d; color: #9bb0c9; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+
+.control-group { margin-bottom: 0.5rem; font-size: 0.85rem; }
+.control-group label { display: block; margin-bottom: 0.2rem; color: var(--muted); }
+input[type="range"] { width: 100%; accent-color: var(--cyan); background: #10243d; }
+
+button {
+    width: 100%; padding: 0.5rem; margin-top: 0.4rem;
+    background: linear-gradient(90deg, #0d5ea8, #00c6ff);
+    border: none; color: white; font-weight: 700; border-radius: 4px;
+    cursor: pointer; transition: opacity 0.2s; font-size: 0.85rem;
+}
+button:hover { opacity: 0.9; }
+
+/* ENGINEERING ANALYSIS BOTTOM PANEL OPTIMIZATION */
+.explanation-panel { 
+    height: 145px; 
+    flex: unset; 
+    flex-shrink: 0; 
+    overflow-y: auto;
+}
+#analysis-content { font-size: 0.85rem; line-height: 1.4; }
+#analysis-content strong { color: var(--cyan); }
+#analysis-content p { color: #c7d6ea; margin-bottom: 0.4rem; }
+.equation-box { background: #020b16; border-left: 3px solid var(--cyan); padding: 0.4rem 0.75rem; margin: 0.4rem 0; font-family: monospace; color: var(--green); font-size: 1rem; display: inline-block; border-radius: 0 4px 4px 0; }
+
+.footer-bar { height: 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; background: #07111f; font-size: 0.8rem; color: var(--muted); }
+
+/* HIGH-VISIBILITY SCADA LABEL CLASSES */
+.svg-label {
+    fill: #ffffff;
+    font-size: 20px; 
+    font-weight: 800;
+    font-family: "Segoe UI", sans-serif;
+    pointer-events: none;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+}
+.gen-label { fill: var(--green); text-anchor: middle; }
+.bus-label { fill: #ffffff; }
+.load-label { fill: var(--yellow); font-weight: 700; }
+
+/* =========================================================
+   📱 MOBILE & TABLET RESPONSIVENESS RULES 
+   ========================================================= */
+@media (max-width: 1100px) {
+    body {
+        overflow-y: auto; /* Enable vertical scrolling for stacked layout */
+    }
+
+    .dashboard {
+        /* Swap from 3 columns to 1 fluid vertical column */
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 100vh;
+        overflow-y: visible;
+    }
+
+    /* Allow sidebars to grow natively with their content */
+    .sidebar, .right-panel {
+        height: auto;
+        overflow-y: visible;
+    }
+
+    /* Secure the canvas area so it doesn't collapse to 0 height */
+    .center-panel {
+        min-height: 60vh; 
+        overflow: visible;
+    }
+
+    /* Stack header elements for narrower screens */
+    .topbar {
+        height: auto;
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .top-left {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .top-right {
+        justify-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    /* Stack the tiny trend charts vertically so they remain readable */
+    .trend-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .trend-panel {
+        height: 150px; /* Give individual charts more breathing room */
+    }
+
+    .explanation-panel {
+        height: auto;
+        min-height: 140px;
+    }
+
+    .footer-bar {
+        flex-direction: column;
+        height: auto;
+        padding: 1rem;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}

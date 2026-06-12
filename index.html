@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power System Stability Analytics</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['$$', '$$']]
+            },
+            options: {
+                processHtmlClass: 'markup-math'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="top-left">
+            <div class="menu-btn">☰</div>
+            <div class="logo-icon">⚡</div>
+            <div>
+                <h1>POWER SYSTEM STABILITY ANALYTICS</h1>
+                <p>Interactive SCADA Training Simulator</p>
+            </div>
+        </div>
+
+        <div class="top-right">
+            <div class="clock-panel">
+                <div id="live-time">00:00:00</div>
+                <div id="live-date">YYYY-MM-DD</div>
+            </div>
+            <div class="operator-panel">
+                <div class="status-dot"></div>
+                <div>
+                    <strong>OPERATOR</strong>
+                    <p>Control Room A</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard">
+
+        <aside class="sidebar">
+            <div class="panel">
+                <div class="panel-header">LESSON MODULE</div>
+                <div id="course-content" class="markup-math"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">NAVIGATION</div>
+                <div class="nav-controls">
+                    <button id="btn-prev" onclick="changeStep(-1)">◀ Previous</button>
+                    <button id="btn-next" onclick="changeStep(1)">Next ▶</button>
+                </div>
+                <div id="step-indicators" class="step-dots"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">SYSTEM METRICS (LIVE)</div>
+                <div class="metric-box">
+                    <div class="metric-title">Frequency</div>
+                    <div id="m-freq" class="metric-value">50.00 Hz</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-title">Bus 3 Voltage</div>
+                    <div id="m-volt" class="metric-value">1.00 pu</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-title">System State</div>
+                    <div id="m-state" class="metric-value">Stable</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="center-panel" style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
+            <div id="viewport-container" style="position: relative; flex: 1; display: flex; flex-direction: column; min-height: 0; min-width: 0;">
+                
+                <div id="scada-view" style="display: flex; flex-direction: column; gap: 0.75rem; height: 100%; box-sizing: border-box;">
+                    <div class="panel large-panel" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                        <div class="panel-header">NETWORK TOPOLOGY (LIVE SIMULATION)</div>
+                        <div class="topology-container" style="flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 10px;">
+                            <svg id="grid-svg" viewBox="50 40 800 410" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: 100%; max-height: 350px;">
+                                <line x1="200" y1="120" x2="650" y2="120" class="transmission-line" id="line-1-2" />
+                                <line x1="200" y1="120" x2="450" y2="350" class="transmission-line" id="line-1-3" />
+                                <line x1="650" y1="120" x2="450" y2="350" class="transmission-line critical-line" id="line-2-3" style="cursor: pointer;" />
+
+                                <circle cx="130" cy="120" r="36" class="generator" id="gen1" style="cursor: pointer;" />
+                                <circle cx="720" cy="120" r="36" class="generator" id="gen2" style="cursor: pointer;" />
+                                <circle cx="450" cy="425" r="32" class="generator" id="gen3" style="cursor: pointer;" />
+
+                                <line x1="200" y1="60" x2="200" y2="180" class="busbar" id="bus1" style="cursor: pointer;" />
+                                <line x1="650" y1="60" x2="650" y2="180" class="busbar" id="bus2" style="cursor: pointer;" />
+                                <line x1="370" y1="350" x2="530" y2="350" class="busbar" id="bus3" style="cursor: pointer;" />
+                                
+                                <text x="130" y="126" class="svg-label gen-label">G1</text>
+                                <text x="720" y="126" class="svg-label gen-label">G2</text>
+                                <text x="450" y="431" class="svg-label gen-label">G3</text>
+                                
+                                <text x="215" y="85" class="svg-label bus-label">Bus 1</text>
+                                <text x="635" y="85" class="svg-label bus-label" text-anchor="end">Bus 2</text>
+                                <text x="450" y="380" class="svg-label bus-label" text-anchor="middle">Bus 3</text>
+                                
+                                <text x="490" y="315" class="svg-label load-label" text-anchor="start">Industrial Load Center</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="trend-grid">
+                        <div class="panel trend-panel"><div class="panel-header">FREQ TREND</div><canvas id="freqChart"></canvas></div>
+                        <div class="panel trend-panel"><div class="panel-header">VOLT TREND</div><canvas id="voltChart"></canvas></div>
+                        <div class="panel trend-panel"><div class="panel-header">ROTOR ANGLE</div><canvas id="rotorChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div id="dynamic-viz-view" class="panel" style="display: none; height: 100%; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--cyan); background: radial-gradient(circle, #0a1829, #050b16); box-sizing: border-box; overflow: hidden; padding: 20px;">
+                </div>
+
+            </div>
+
+            <div class="panel explanation-panel">
+                <div class="panel-header">ENGINEERING ANALYSIS</div>
+                <div id="analysis-content" class="markup-math"></div>
+            </div>
+        </main>
+
+        <aside class="right-panel">
+            <div class="panel">
+                <div class="panel-header">ALARM PANEL</div>
+                <div id="alarm-box"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">SEQUENCE OF EVENTS</div>
+                <div id="event-log"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">CONTROL ACTIONS</div>
+                <div class="control-group">
+                    <label>Load Demand (P_e)</label>
+                    <input type="range" min="0.5" max="2" step="0.1" value="1" id="loadSlider" />
+                </div>
+                <div class="control-group">
+                    <label>Mechanical Power (P_m)</label>
+                    <input type="range" min="0.5" max="2" step="0.1" value="1" id="pmSlider" />
+                </div>
+                <button onclick="injectFault('line')">Inject Line Fault</button>
+                <button onclick="toggleBreaker()">Toggle Breaker</button>
+                <button onclick="injectFault('generator')">Generator Trip</button>
+                <button id="voice-toggle" onclick="toggleVoice()" style="background: #14304d; margin-top: 15px;">🔊 Voice: ON</button>
+                <button id="pause-toggle" onclick="pauseNarration()">⏸️ Pause</button>
+            </div>
+        </aside>
+
+    </div>
+
+    <footer class="footer-bar">
+        <div>SCADA STATUS: <span class="green-text">CONNECTED</span></div>
+        <div>SIMULATION: <span class="green-text">RUNNING</span></div>
+        <div>NUMERICAL METHOD: Euler Integration Loop</div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/scada.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/telemetry.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/simulation.js"></script>
+    <script src="js/svg.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
